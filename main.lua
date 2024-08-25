@@ -14,7 +14,6 @@ function love.load()
         enemy.Y = love.math.random(-200,600)
         table.insert(enemies, enemy)
     end
-    
 end
 
 function love.update(dt)
