@@ -61,7 +61,7 @@ function enemy:Follow(player, dt)
     
     
     
-    if utils:Distance(self.X, self.Y, player.X, player.Y) <= 40 then
+    if utils:Distance(self.X, self.Y, player.X, player.Y) <= 50 then
         player:TakeDamage(self.Damage)
 
         self.attacking = true
