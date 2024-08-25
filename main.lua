@@ -1,5 +1,6 @@
 local player = require("modules.player")
 local utils = require("yan.utils")
+local shop = require("modules.shop")
 local enemies = {}
 local crumbs = {}
 
@@ -64,7 +65,10 @@ function love.load()
     player:Load(world)
     love.window.setMode(500,500,{borderless = true})
     cx, cy = love.window.getPosition()
-    
+    shop.X = 300
+    shop.Y = 300
+    shop.Visible = true
+    shop:Load()
     SpawnWave()
 end
 
@@ -102,7 +106,7 @@ function love.update(dt)
         waveTextHideDelay = -1
         yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,-0.1,0)}):Play()
     end
-
+    
     player:Update(dt)
     
     love.window.setPosition(cx, cy)
@@ -119,6 +123,8 @@ function love.keypressed(key)
 end
 
 function love.draw()
+    love.graphics.setBackgroundColor(0.5,0.5,0.5,0)
+    shop:Draw(cx,cy)
     for _, enemy in ipairs(enemies) do
         enemy:Draw(cx - cxOffset, cy - cyOffset)
     end
@@ -131,6 +137,8 @@ function love.draw()
     love.graphics.setColor(1,0,0,1)
     love.graphics.rectangle("fill", 5, 5, (player.Health / player.MaxHealth) * 75, 25)
     love.graphics.setColor(1,1,1,1)
+    
+    
 
     yan:Draw()
 end
