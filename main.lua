@@ -23,7 +23,7 @@ end
 function love.update(dt)
     world:update(dt)
     for _, enemy in ipairs(enemies) do
-        enemy:Follow(player.X, player.Y, dt)
+        enemy:Follow(player, dt)
     end
     player:Update(dt)
     
@@ -45,4 +45,9 @@ function love.draw()
         enemy:Draw(cx - cxOffset, cy - cyOffset)
     end
     player:Draw(cx - cxOffset, cy - cyOffset)
+
+    love.graphics.rectangle("fill", 5, 5, 75, 25)
+    love.graphics.setColor(1,0,0,1)
+    love.graphics.rectangle("fill", 5, 5, (player.Health / player.MaxHealth) * 75, 25)
+    love.graphics.setColor(1,1,1,1)
 end

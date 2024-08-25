@@ -12,6 +12,7 @@ player.MaxHealth = 100
 local movementDirections = {up = {0,-1}, left = {-1,0}, down = {0,1}, right = {1,0}}
 
 local sprite = love.graphics.newImage("/img/player.png")
+local spritedmg = love.graphics.newImage("/img/player_damage.png")
 local sword = love.graphics.newImage("/img/sword.png")
 
 player.DX = 0
@@ -21,6 +22,9 @@ local attacking = false
 local stopAttackTimer = 0
 
 local attack = {Rotation = 0}
+
+local damageTimer
+local damaged = false
 
 function player:Load(world)
     self.Body = love.physics.newBody(world, self.X, self.Y, "dynamic")
@@ -64,6 +68,12 @@ function player:Update(dt)
             attacking = false
         end
     end
+
+    if damaged then
+        if love.timer.getTime() > damageTimer then
+            damaged = false
+        end
+    end
     
     self.X = self.Body:getX()
     self.Y = self.Body:getY()
@@ -72,7 +82,19 @@ function player:Update(dt)
     self.DY = self.Y - prevY
 end
 
+function player:TakeDamage(damage)
+    damaged = true
+    damageTimer = love.timer.getTime() + 0.1
+    self.Health = self.Health - damage
+    
+    if self.Health <= 0 then
+        self.Body:setActive(false)
+        self.Dead = true
+    end
+end
+
 function player:Attack(enemies)
+    if attacking then return end
     attacking = true
     stopAttackTimer = love.timer.getTime() + 0.2
     attack.Rotation = 0
@@ -85,7 +107,7 @@ function player:Attack(enemies)
 end
 
 function player:Draw(cx, cy)
-    love.graphics.draw(sprite, self.X - cx, self.Y - cy, 0, self.Direction, 1, 25, 25)
+    love.graphics.draw(damaged and spritedmg or sprite, self.X - cx, self.Y - cy, 0, self.Direction, 1, 25, 25)
     if attacking then love.graphics.draw(sword, self.X - cx, self.Y - cy, attack.Rotation, self.Direction, 1, 75, 75) end
 end
 

@@ -1,5 +1,5 @@
 local enemy = {}
-
+local utils = require("yan.utils")
 enemy.X = 0
 enemy.Y = 0
 enemy.Speed = 5
@@ -10,6 +10,11 @@ enemy.__index = enemy
 enemy.Health = 10
 enemy.MaxHealth = 10
 enemy.Dead = false
+enemy.Damage = 1
+
+enemy.attackTimer = 0
+enemy.attacking = false
+
 local sprite = love.graphics.newImage("/img/enemy.png")
 
 function enemy:Load(world)
@@ -20,33 +25,48 @@ function enemy:Load(world)
     self.Fixture:setRestitution(0)
 end
 
-function enemy:Follow(playerX, playerY, dt)
+function enemy:Follow(player, dt)
+    self.X = self.Body:getX()
+    self.Y = self.Body:getY()
+    if self.attacking then
+        if love.timer.getTime() >= self.attackTimer then
+            self.attacking = false
+        else
+            return
+        end
+    end
     if self.Dead then return end
 
     local impulseX, impulseY = 0, 0
 
-    if self.X < playerX then
+    if self.X < player.X then
         impulseX = self.Speed
         self.Direction = -1
     end
     
-    if self.X > playerX then
+    if self.X > player.X then
         impulseX = -self.Speed
         self.Direction = 1
     end
     
-    if self.Y < playerY then
+    if self.Y < player.Y then
         impulseY = self.Speed
     end
     
-    if self.Y > playerY then
+    if self.Y > player.Y then
         impulseY = -self.Speed
     end
 
     self.Body:applyLinearImpulse(impulseX, impulseY)
+    
+    
+    
+    if utils:Distance(self.X, self.Y, player.X, player.Y) <= 40 then
+        player:TakeDamage(self.Damage)
 
-    self.X = self.Body:getX()
-    self.Y = self.Body:getY()
+        self.attacking = true
+        self.attackTimer = love.timer.getTime() + 1
+    end
 end
 
 function enemy:TakeDamage(damage)
