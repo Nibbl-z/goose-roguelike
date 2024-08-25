@@ -51,8 +51,9 @@ end
 
 function enemy:TakeDamage(damage)
     self.Health = self.Health - damage
-
+    
     if self.Health <= 0 then
+        self.Body:setActive(false)
         self.Dead = true
     end
 end

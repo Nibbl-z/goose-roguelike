@@ -1,6 +1,6 @@
 local player = {}
 local utils = require("yan.utils")
-
+require 'yan'
 player.X = 400
 player.Y = 300
 player.Speed = 50
@@ -19,6 +19,8 @@ player.DY = 0
 
 local attacking = false
 local stopAttackTimer = 0
+
+local attack = {Rotation = 0}
 
 function player:Load(world)
     self.Body = love.physics.newBody(world, self.X, self.Y, "dynamic")
@@ -62,7 +64,7 @@ function player:Update(dt)
             attacking = false
         end
     end
-
+    
     self.X = self.Body:getX()
     self.Y = self.Body:getY()
     
@@ -72,9 +74,11 @@ end
 
 function player:Attack(enemies)
     attacking = true
-
+    stopAttackTimer = love.timer.getTime() + 0.2
+    attack.Rotation = 0
+    yan:NewTween(attack, yan:TweenInfo(0.2), {Rotation = attack.Rotation + math.rad(360)}):Play()
     for _, enemy in ipairs(enemies) do
-        if utils:Distance(self.X, self.Y, enemy.X, enemy.Y) < 75 then
+        if utils:Distance(self.X, self.Y, enemy.X, enemy.Y) < 90 then
             enemy:TakeDamage(5)
         end
     end
@@ -82,7 +86,7 @@ end
 
 function player:Draw(cx, cy)
     love.graphics.draw(sprite, self.X - cx, self.Y - cy, 0, self.Direction, 1, 25, 25)
-    love.graphics.draw(sword, self.X - cx, self.Y - cy, 0, self.Direction, 1, 75, 75)
+    if attacking then love.graphics.draw(sword, self.X - cx, self.Y - cy, attack.Rotation, self.Direction, 1, 75, 75) end
 end
 
 return player

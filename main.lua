@@ -6,7 +6,7 @@ local cx, cy = 0, 0
 local cxOffset, cyOffset = 550, 250
 
 local world = love.physics.newWorld(0, 0, true)
-
+require 'yan'
 function love.load()
     player:Load(world)
     love.window.setMode(500,500,{borderless = true})
@@ -30,6 +30,8 @@ function love.update(dt)
     love.window.setPosition(cx, cy)
     cx = cx + player.DX
     cy = cy + player.DY
+
+    yan:Update(dt)
 end
 
 function love.keypressed(key)
