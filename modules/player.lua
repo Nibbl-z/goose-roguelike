@@ -3,7 +3,7 @@ local utils = require("yan.utils")
 
 player.X = 400
 player.Y = 300
-player.Speed = 250
+player.Speed = 50
 player.Direction = 1
 
 player.Health = 100
@@ -20,28 +20,54 @@ player.DY = 0
 local attacking = false
 local stopAttackTimer = 0
 
+function player:Load(world)
+    self.Body = love.physics.newBody(world, self.X, self.Y, "dynamic")
+    self.Body:setLinearDamping(5)
+    self.Shape = love.physics.newRectangleShape(50, 50)
+    self.Fixture = love.physics.newFixture(self.Body, self.Shape)
+    self.Fixture:setRestitution(0)
+end
+
 function player:Update(dt)
     self.DX = 0
     self.DY = 0
+
+    local prevX, prevY = self.X, self.Y
+
     for key, mult in pairs(movementDirections) do
+       
         if love.keyboard.isDown(key) then
-            self.X = self.X + mult[1] * dt * self.Speed
-            self.Y = self.Y + mult[2] * dt * self.Speed
-            self.DX = self.DX + mult[1] * dt * self.Speed
-            self.DY = self.DY + mult[2] * dt * self.Speed
+            local impulseX, impulseY = 0, 0
+            impulseX = impulseX + mult[1] * self.Speed 
+            impulseY = impulseY + mult[2] * self.Speed
+            --[[self.DX = self.DX + mult[1] * dt * self.Speed
+            self.DY = self.DY + mult[2] * dt * self.Speed]]
+
             if key == "left" then
                 self.Direction = 1
             elseif key == "right" then
                 self.Direction = -1
             end
+            
+            self.Body:applyLinearImpulse(impulseX, impulseY)
         end
+        
+       
     end
+    
+    
 
     if attacking then
         if love.timer.getTime() > stopAttackTimer then
             attacking = false
         end
     end
+
+    self.X = self.Body:getX()
+    self.Y = self.Body:getY()
+    
+    self.DX = self.X - prevX
+    self.DY = self.Y - prevY
 end
 
 function player:Attack(enemies)
