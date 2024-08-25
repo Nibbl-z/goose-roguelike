@@ -120,11 +120,19 @@ function love.keypressed(key)
     if key == "z" then
         player:Attack(enemies)
     end
+    
+    if key == "e" then
+        print(utils:Distance(player.X, player.Y, shop.X, shop.Y))
+        print(player.X, player.Y, shop.X, shop.Y)
+        if utils:Distance(player.X, player.Y, shop.X, shop.Y) <= 75 then
+            shop.Screen.Enabled = not shop.Screen.Enabled
+        end
+    end
 end
 
 function love.draw()
     love.graphics.setBackgroundColor(0.5,0.5,0.5,0)
-    shop:Draw(cx,cy)
+    shop:Draw(cx - cxOffset,cy  - cyOffset)
     for _, enemy in ipairs(enemies) do
         enemy:Draw(cx - cxOffset, cy - cyOffset)
     end

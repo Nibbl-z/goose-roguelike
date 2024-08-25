@@ -5,21 +5,24 @@ shop.Y = 0
 shop.Visible = false
 require 'yan'
 local sprite = love.graphics.newImage("/img/shop.png")
-
+local player = require("modules.player")
 local purchases = {
     {
         Name = "Heal",
         Description = "Heals 10 health",
         Price = 10,
-        OnPurchase = function ()
-            print("hi")
+        OnPurchase = function (player)
+            player.Health  = player.Health + 10
+            if player.Health > player.MaxHealth then
+                player.Health = player.MaxHealth
+            end
         end
     }
 }
 
 function shop:Load()
     self.Screen = yan:Screen()
-    
+    self.Screen.Enabled = false
     frame = yan:Frame(self.Screen)
     frame.Size = UIVector2.new(0.6,0,0.6,0)
     frame.Position = UIVector2.new(0.5,0,0.5,0)
@@ -56,6 +59,14 @@ function shop:Load()
         purchaseButton.TextColor = Color.new(1,1,1,1)
         purchaseButton:SetParent(purchaseFrame)
         purchaseButton.ZIndex = 3
+
+        purchaseButton.MouseDown = function ()
+            if player.Crumbs >= purchase.Price then
+                player.Crumbs = player.Crumbs - purchase.Price
+                purchase.OnPurchase(player)
+            end
+            
+        end
     end
 end
 
