@@ -9,6 +9,8 @@ player.Direction = 1
 player.Health = 100
 player.MaxHealth = 100
 
+player.Crumbs = 0
+
 local movementDirections = {up = {0,-1}, left = {-1,0}, down = {0,1}, right = {1,0}}
 
 local sprite = love.graphics.newImage("/img/player.png")
