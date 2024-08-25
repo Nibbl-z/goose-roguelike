@@ -4,10 +4,17 @@ local enemies = {}
 
 local cx, cy = 0, 0
 local cxOffset, cyOffset = 550, 250
+
 function love.load()
     love.window.setMode(500,500,{})
     cx, cy = love.window.getPosition()
-    table.insert(enemies, require("modules.enemy"))
+    for i = 1, 20 do
+        local enemy = setmetatable({}, require("modules.enemy"))
+        enemy.X = love.math.random(-200,600)
+        enemy.Y = love.math.random(-200,600)
+        table.insert(enemies, enemy)
+    end
+    
 end
 
 function love.update(dt)
@@ -19,6 +26,12 @@ function love.update(dt)
     love.window.setPosition(cx, cy)
     cx = cx + player.DX
     cy = cy + player.DY
+end
+
+function love.keypressed(key)
+    if key == "z" then
+        player:Attack(enemies)
+    end
 end
 
 function love.draw()
