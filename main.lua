@@ -1,6 +1,8 @@
 local player = require("modules.player")
 local utils = require("yan.utils")
 local shop = require("modules.shop")
+local menu = require("modules.menu")
+
 local enemies = {}
 local crumbs = {}
 
@@ -27,6 +29,7 @@ local waveTextHideDelay = love.timer.getTime() + 3
 local waveSpawnDelay = -1
 
 local paused = false
+local started = false
 
 local sprites = {
     HealthbarBase = love.graphics.newImage("/img/healthbar_base.png"),
@@ -70,10 +73,31 @@ function SpawnWave()
     end
 end
 
+function menu.OnPlay()
+    started = true
+
+    shop.X = 300
+    shop.Y = 300
+    shop.Visible = true
+    shop:Load()
+    
+    sfx.Wave:clone():play()
+    waveText.Text = "WAVE "..wave
+    yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,0,0)}):Play()
+    waveTextHideDelay = love.timer.getTime() + 3
+    screen.Enabled = true
+    SpawnWave()
+end
+
 function love.load()
+    shop.Visible = false
+    love.window.setMode(500,500,{borderless = true})
+    cx, cy = love.window.getPosition()
+    player:Load(world)
+    menu:Load()
     screen = yan:Screen()
     
-    screen.Enabled = true
+    screen.Enabled = false
     
     waveText = yan:Label(screen, "WAVE 1", 32, "center", "center", "/Montserrat.ttf")
     waveText.Size = UIVector2.new(1,0,0.1,0)
@@ -90,26 +114,10 @@ function love.load()
     crumbsText.AnchorPoint = Vector2.new(1,0)
     crumbsText.TextColor = Color.new(1,1,1,1)
     crumbsText.Size = UIVector2.new(0.5,0,0,30)
-    
-    player:Load(world)
-    love.window.setMode(500,500,{borderless = true})
-    cx, cy = love.window.getPosition()
-    shop.X = 300
-    shop.Y = 300
-    shop.Visible = true
-    shop:Load()
-    
-    sfx.Wave:clone():play()
-    waveText.Text = "WAVE "..wave
-    yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,0,0)}):Play()
-    waveTextHideDelay = love.timer.getTime() + 3
-    
-    SpawnWave()
-    
     bgImage = love.graphics.newImage("/img/grass.png")
     bgImage:setWrap("repeat", "repeat")
     bgQuad = love.graphics.newQuad(0, 0, 20000000, 20000000, 800, 600)
-
+    
     sfx.Music:setLooping(true)
     sfx.Music:setVolume(0.3)
     sfx.Music:play()
@@ -140,7 +148,7 @@ function love.update(dt)
     
     crumbsText.Text = player.Crumbs
     
-    if deadEnemies == #enemies and waveSpawnDelay == -1 then
+    if deadEnemies == #enemies and waveSpawnDelay == -1 and started then
         waveSpawnDelay = love.timer.getTime() + 3
         wave = wave + 1
         
@@ -215,21 +223,17 @@ function love.draw()
     end
     player:Draw(cx - cxOffset, cy - cyOffset)
     
-    love.graphics.draw(sprites.HealthbarBase)
+    if screen.Enabled then
+        love.graphics.draw(sprites.HealthbarBase)
     
-    love.graphics.stencil(function ()
-        love.graphics.rectangle("fill", 34, 5, (player.Health / player.MaxHealth) * 60, 20)
-    end, "replace", 1)
-    love.graphics.setStencilTest("greater", 0)
-    
-    love.graphics.draw(sprites.Healthbar, 34, 5)
-    love.graphics.setStencilTest()
-    --[[love.graphics.rectangle("fill", 5, 5, 75, 25)
-    love.graphics.setColor(1,0,0,1)
-    love.graphics.rectangle("fill", 5, 5, (player.Health / player.MaxHealth) * 75, 25)
-    love.graphics.setColor(1,1,1,1)]]
-    
-    
+        love.graphics.stencil(function ()
+            love.graphics.rectangle("fill", 34, 5, (player.Health / player.MaxHealth) * 60, 20)
+        end, "replace", 1)
+        love.graphics.setStencilTest("greater", 0)
+        
+        love.graphics.draw(sprites.Healthbar, 34, 5)
+        love.graphics.setStencilTest()
+    end
     
     yan:Draw()
 end

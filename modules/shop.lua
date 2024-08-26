@@ -121,7 +121,6 @@ function shop:Draw(cx, cy)
     elseif self.Sprite == 2 then
         love.graphics.draw(spriteHover, self.X - cx, self.Y - cy)
     end
-    
 end
 
 return shop
