@@ -9,7 +9,7 @@ player.Direction = 1
 player.Health = 100
 player.MaxHealth = 100
 
-player.Crumbs = 1000
+player.Crumbs = 0
 player.Strength = 5
 player.SwordSize = 75
 

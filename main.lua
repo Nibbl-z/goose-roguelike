@@ -14,6 +14,15 @@ local wave = 1
 local startingEnemies = 5
 local enemyIncrease = 4
 
+local startSpeed = 5
+local speedIncrease = 2
+
+local startDamage = 1
+local damageIncrease = 1
+
+local startHealth = 10
+local healthIncrease = 1
+
 local waveTextHideDelay = love.timer.getTime() + 3
 
 local paused = false
@@ -34,6 +43,10 @@ function SpawnWave()
         end
         ChoosePos()
         
+        enemy.Speed = startSpeed + (wave - 1) * speedIncrease
+        enemy.Damage = startDamage + (wave - 1) * damageIncrease
+        enemy.Health = startHealth + (wave - 1) * healthIncrease
+        enemy.MaxHealth = startHealth + (wave - 1) * healthIncrease
         enemy:Load(world)
         enemy.OnDeath = function ()
             local crumb = setmetatable({}, require("modules.crumb"))
