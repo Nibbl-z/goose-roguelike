@@ -24,6 +24,7 @@ local startHealth = 10
 local healthIncrease = 0.25
 
 local waveTextHideDelay = love.timer.getTime() + 3
+local waveSpawnDelay = -1
 
 local paused = false
 
@@ -40,11 +41,6 @@ local sfx = {
 
 
 function SpawnWave()
-    sfx.Wave:clone():play()
-    waveText.Text = "WAVE "..wave
-    yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,0,0)}):Play()
-    waveTextHideDelay = love.timer.getTime() + 3
-    
     for i = 1, startingEnemies + (enemyIncrease * (wave - 1)) do
         local enemy = setmetatable({}, require("modules.enemy"))
         
@@ -102,6 +98,12 @@ function love.load()
     shop.Y = 300
     shop.Visible = true
     shop:Load()
+    
+    sfx.Wave:clone():play()
+    waveText.Text = "WAVE "..wave
+    yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,0,0)}):Play()
+    waveTextHideDelay = love.timer.getTime() + 3
+    
     SpawnWave()
     
     bgImage = love.graphics.newImage("/img/grass.png")
@@ -138,8 +140,22 @@ function love.update(dt)
 
     crumbsText.Text = player.Crumbs
     
-    if deadEnemies == #enemies then
+    if deadEnemies == #enemies and waveSpawnDelay ~= -1 then
+        waveSpawnDelay = love.timer.getTime() + 3
         wave = wave + 1
+        
+        sfx.Wave:clone():play()
+        waveText.Text = "WAVE "..wave
+        yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,0,0)}):Play()
+        waveTextHideDelay = love.timer.getTime() + 3
+    end
+    
+    if waveSpawnDelay ~= -1 and love.timer.getTime() > waveSpawnDelay then
+        
+        waveSpawnDelay = -1
+        
+        
+        
         SpawnWave()
     end
 

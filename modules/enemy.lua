@@ -72,7 +72,10 @@ end
 
 function enemy:TakeDamage(damage)
     self.Health = self.Health - damage
-    damageSfx:clone():play()
+    if not self.Dead then
+        damageSfx:clone():play()
+    end
+    
     if self.Health <= 0 and not self.Dead then
         self.Body:setActive(false)
         self.Dead = true
