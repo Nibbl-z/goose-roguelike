@@ -17,6 +17,24 @@ local purchases = {
                 player.Health = player.MaxHealth
             end
         end
+    },
+    
+    {
+        Name = "Strength",
+        Description = "Increase sword damage by 2",
+        Price = 15,
+        OnPurchase = function (player)
+            player.Strength = player.Strength + 2
+        end
+    },
+
+    {
+        Name = "Bigger Sword",
+        Description = "Increase sword range by 10",
+        Price = 15,
+        OnPurchase = function (player)
+            player.SwordSize = player.SwordSize + 10
+        end
     }
 }
 
@@ -39,7 +57,7 @@ function shop:Load()
         purchaseFrame.Padding = UIVector2.new(0,10,0,10)
         purchaseFrame:SetParent(frame)
         
-        titleLabel = yan:Label(self.Screen, purchase.Name, 25, "left", "center")
+        titleLabel = yan:Label(self.Screen, purchase.Name, 20, "left", "center")
         titleLabel.Size = UIVector2.new(0.6,0,0.6,0)
         titleLabel.TextColor = Color.new(1,1,1,1)
         titleLabel:SetParent(purchaseFrame)

@@ -18,7 +18,7 @@ local waveTextHideDelay = love.timer.getTime() + 3
 
 function SpawnWave()
     waveText.Text = "WAVE "..wave
-    yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,0,0)}):Play()
+    --yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,0,0)}):Play()
     waveTextHideDelay = love.timer.getTime() + 3
     
     for i = 1, startingEnemies + (enemyIncrease * (wave - 1)) do
@@ -28,7 +28,7 @@ function SpawnWave()
             enemy.X = love.math.random(-400,800)
             enemy.Y = love.math.random(-400,800)
 
-            if utils:Distance(enemy.X, enemy.Y, player.X, player.Y) <= 300 then ChoosePos() return end
+            --if utils:Distance(enemy.X, enemy.Y, player.X, player.Y) <= 300 then ChoosePos() return end
         end
         ChoosePos()
         
@@ -78,22 +78,21 @@ function love.update(dt)
     local deadEnemies = 0
 
     for _, enemy in ipairs(enemies) do
-        enemy:Follow(player, dt)
+        --enemy:Follow(player, dt)
         
         if enemy.Dead then
             deadEnemies = deadEnemies + 1
         end
     end
 
-    for _, crumb in ipairs(crumbs) do
-        print(utils:Distance(player.X, player.Y, crumb.X, crumb.Y))
+    --[[for _, crumb in ipairs(crumbs) do
         if utils:Distance(player.X, player.Y, crumb.X, crumb.Y) <= 30 then
             if not crumb.Collected then
                 crumb.Collected = true
                 player.Crumbs = player.Crumbs + 1
             end
         end
-    end
+    end]]
 
     crumbsText.Text = "Crumbs: "..player.Crumbs
     
@@ -104,7 +103,7 @@ function love.update(dt)
 
     if waveTextHideDelay ~= -1 and love.timer.getTime() >= waveTextHideDelay then
         waveTextHideDelay = -1
-        yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,-0.1,0)}):Play()
+       -- yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,-0.1,0)}):Play()
     end
     
     player:Update(dt)
@@ -117,10 +116,9 @@ function love.update(dt)
 end
 
 function love.keypressed(key)
-    if key == "z" then
+    if key == "space" then
         player:Attack(enemies)
     end
-    
     if key == "e" then
         print(utils:Distance(player.X, player.Y, shop.X, shop.Y))
         print(player.X, player.Y, shop.X, shop.Y)
@@ -129,6 +127,12 @@ function love.keypressed(key)
         end
     end
 end
+
+--[[function love.mousepressed(x,y,button)
+    if button == 1 then
+        
+    end
+end]]
 
 function love.draw()
     love.graphics.setBackgroundColor(0.5,0.5,0.5,0)

@@ -9,9 +9,11 @@ player.Direction = 1
 player.Health = 100
 player.MaxHealth = 100
 
-player.Crumbs = 0
+player.Crumbs = 1000
+player.Strength = 5
+player.SwordSize = 75
 
-local movementDirections = {up = {0,-1}, left = {-1,0}, down = {0,1}, right = {1,0}}
+local movementDirections = {w = {0,-1}, a = {-1,0}, s = {0,1}, d = {1,0}}
 
 local sprite = love.graphics.newImage("/img/player.png")
 local spritedmg = love.graphics.newImage("/img/player_damage.png")
@@ -39,9 +41,9 @@ end
 function player:Update(dt)
     self.DX = 0
     self.DY = 0
-
+    
     local prevX, prevY = self.X, self.Y
-
+    
     for key, mult in pairs(movementDirections) do
        
         if love.keyboard.isDown(key) then
@@ -50,10 +52,10 @@ function player:Update(dt)
             impulseY = impulseY + mult[2] * self.Speed
             --[[self.DX = self.DX + mult[1] * dt * self.Speed
             self.DY = self.DY + mult[2] * dt * self.Speed]]
-
-            if key == "left" then
+            
+            if key == "a" then
                 self.Direction = 1
-            elseif key == "right" then
+            elseif key == "d" then
                 self.Direction = -1
             end
             
@@ -100,17 +102,17 @@ function player:Attack(enemies)
     attacking = true
     stopAttackTimer = love.timer.getTime() + 0.2
     attack.Rotation = 0
-    yan:NewTween(attack, yan:TweenInfo(0.2), {Rotation = attack.Rotation + math.rad(360)}):Play()
+    --yan:NewTween(attack, yan:TweenInfo(0.2), {Rotation = attack.Rotation + math.rad(360)}):Play()
     for _, enemy in ipairs(enemies) do
-        if utils:Distance(self.X, self.Y, enemy.X, enemy.Y) < 90 then
-            enemy:TakeDamage(5)
+        if utils:Distance(self.X, self.Y, enemy.X, enemy.Y) < self.SwordSize + 20 then
+            enemy:TakeDamage(self.Strength)
         end
     end
 end
 
 function player:Draw(cx, cy)
     love.graphics.draw(damaged and spritedmg or sprite, self.X - cx, self.Y - cy, 0, self.Direction, 1, 25, 25)
-    if attacking then love.graphics.draw(sword, self.X - cx, self.Y - cy, attack.Rotation, self.Direction, 1, 75, 75) end
+    if attacking then love.graphics.draw(sword, self.X - cx, self.Y - cy, attack.Rotation, ((self.SwordSize * 2) / 150) * self.Direction, (self.SwordSize * 2) / 150, self.SwordSize, self.SwordSize) end
 end
 
 return player
