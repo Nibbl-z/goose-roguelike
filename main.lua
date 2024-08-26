@@ -2,6 +2,7 @@ local player = require("modules.player")
 local utils = require("yan.utils")
 local shop = require("modules.shop")
 local menu = require("modules.menu")
+local pause = require("modules.pause")
 
 local enemies = {}
 local crumbs = {}
@@ -28,7 +29,6 @@ local healthIncrease = 0.25
 local waveTextHideDelay = love.timer.getTime() + 3
 local waveSpawnDelay = -1
 
-local paused = false
 local started = false
 
 local sprites = {
@@ -90,6 +90,8 @@ function menu.OnPlay()
 end
 
 function love.load()
+    pause:Load()
+
     shop.Visible = false
     love.window.setMode(500,500,{borderless = true})
     cx, cy = love.window.getPosition()
@@ -124,12 +126,12 @@ function love.load()
 end
 
 function love.update(dt)
-    if not paused then world:update(dt) end
+    if not pause.Paused then world:update(dt) end
     
     local deadEnemies = 0
 
     for _, enemy in ipairs(enemies) do
-        if not paused then enemy:Follow(player, dt) end
+        if not pause.Paused then enemy:Follow(player, dt) end
         
         if enemy.Dead then
             deadEnemies = deadEnemies + 1
@@ -171,10 +173,10 @@ function love.update(dt)
         yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,-0.1,0)}):Play()
     end
     
-    if not paused then player:Update(dt) end
+    if not pause.Paused then player:Update(dt) end
     
     love.window.setPosition(cx, cy)
-    if not paused then 
+    if not pause.Paused then 
         cx = cx + player.DX
         cy = cy + player.DY
     end
@@ -196,12 +198,17 @@ function love.keypressed(key)
         print(utils:Distance(player.X, player.Y, shop.X, shop.Y))
         print(player.X, player.Y, shop.X, shop.Y)
         if utils:Distance(player.X, player.Y, shop.X + 50, shop.Y + 50) <= 75 then
-            paused = not paused
+            pause.Paused = not pause.Paused
             shop.Screen.Enabled = not shop.Screen.Enabled
         elseif shop.Screen.Enabled then
-            paused = false
+            pause.Paused = false
             shop.Screen.Enabled = false
         end
+    end
+
+    if key == "escape" then
+        pause.Paused = not pause.Paused
+        pause.Screen.Enabled = not pause.Screen.Enabled
     end
 end
 
