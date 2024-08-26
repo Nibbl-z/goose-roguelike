@@ -14,8 +14,8 @@ local wave = 1
 local startingEnemies = 3
 local enemyIncrease = 1
 
-local startSpeed = 5
-local speedIncrease = 0.25
+local startSpeed = 300
+local speedIncrease = 50
 
 local startDamage = 1
 local damageIncrease = 0.1
@@ -34,8 +34,10 @@ local sprites = {
 
 local sfx = {
     Crumb = love.audio.newSource("/sfx/crumb.wav", "static"),
-    Wave = love.audio.newSource("/sfx/wave.wav", "static")
+    Wave = love.audio.newSource("/sfx/wave.wav", "static"),
+    Music = love.audio.newSource("/music/music.mp3", "stream")
 }
+
 
 function SpawnWave()
     sfx.Wave:clone():play()
@@ -105,6 +107,10 @@ function love.load()
     bgImage = love.graphics.newImage("/img/grass.png")
     bgImage:setWrap("repeat", "repeat")
     bgQuad = love.graphics.newQuad(0, 0, 20000000, 20000000, 800, 600)
+
+    sfx.Music:setLooping(true)
+    sfx.Music:setVolume(0.3)
+    sfx.Music:play()
 end
 
 function love.update(dt)

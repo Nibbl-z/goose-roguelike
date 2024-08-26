@@ -3,7 +3,7 @@ local utils = require("yan.utils")
 require 'yan'
 player.X = 400
 player.Y = 300
-player.Speed = 50
+player.Speed = 3000
 player.Direction = 1
 
 player.Health = 100
@@ -49,8 +49,8 @@ function player:Update(dt)
        
         if love.keyboard.isDown(key) then
             local impulseX, impulseY = 0, 0
-            impulseX = impulseX + mult[1] * self.Speed 
-            impulseY = impulseY + mult[2] * self.Speed
+            impulseX = impulseX + mult[1] * self.Speed * dt
+            impulseY = impulseY + mult[2] * self.Speed * dt
             --[[self.DX = self.DX + mult[1] * dt * self.Speed
             self.DY = self.DY + mult[2] * dt * self.Speed]]
             

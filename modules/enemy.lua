@@ -2,7 +2,7 @@ local enemy = {}
 local utils = require("yan.utils")
 enemy.X = 0
 enemy.Y = 0
-enemy.Speed = 5
+enemy.Speed = 500
 enemy.Direction = 1
 
 enemy.__index = enemy
@@ -58,7 +58,7 @@ function enemy:Follow(player, dt)
         impulseY = -self.Speed
     end
 
-    self.Body:applyLinearImpulse(impulseX, impulseY)
+    self.Body:applyLinearImpulse(impulseX * dt, impulseY * dt)
     
     
     

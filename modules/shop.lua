@@ -42,7 +42,7 @@ local purchases = {
         Description = "Increases your movement speed by 10%",
         Price = 10,
         OnPurchase = function (player)
-            player.Speed = player.Speed + 5
+            player.Speed = player.Speed + 300
         end
     },
 
