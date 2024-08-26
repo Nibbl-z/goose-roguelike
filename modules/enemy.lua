@@ -16,6 +16,7 @@ enemy.attackTimer = 0
 enemy.attacking = false
 
 local sprite = love.graphics.newImage("/img/enemy.png")
+local damageSfx = love.audio.newSource("/sfx/damage.wav", "static")
 
 function enemy:Load(world)
     self.Body = love.physics.newBody(world,  self.X, self.Y, "dynamic")
@@ -71,7 +72,7 @@ end
 
 function enemy:TakeDamage(damage)
     self.Health = self.Health - damage
-    
+    damageSfx:clone():play()
     if self.Health <= 0 and not self.Dead then
         self.Body:setActive(false)
         self.Dead = true

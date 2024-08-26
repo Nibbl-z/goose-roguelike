@@ -29,7 +29,8 @@ local attack = {Rotation = 0}
 
 local damageTimer
 local damaged = false
-
+local damageSfx = love.audio.newSource("/sfx/damage.wav", "static")
+local swordSfx = love.audio.newSource("/sfx/sword.mp3", "static")
 function player:Load(world)
     self.Body = love.physics.newBody(world, self.X, self.Y, "dynamic")
     self.Body:setLinearDamping(5)
@@ -90,7 +91,7 @@ function player:TakeDamage(damage)
     damaged = true
     damageTimer = love.timer.getTime() + 0.1
     self.Health = self.Health - damage
-    
+    damageSfx:clone():play()
     if self.Health <= 0 then
         self.Body:setActive(false)
         self.Dead = true
@@ -99,6 +100,7 @@ end
 
 function player:Attack(enemies)
     if attacking then return end
+    swordSfx:clone():play()
     attacking = true
     stopAttackTimer = love.timer.getTime() + 0.2
     attack.Rotation = 0

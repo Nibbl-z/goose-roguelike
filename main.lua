@@ -32,7 +32,13 @@ local sprites = {
     Healthbar = love.graphics.newImage("/img/healthbar.png")
 }
 
+local sfx = {
+    Crumb = love.audio.newSource("/sfx/crumb.wav", "static"),
+    Wave = love.audio.newSource("/sfx/wave.wav", "static")
+}
+
 function SpawnWave()
+    sfx.Wave:clone():play()
     waveText.Text = "WAVE "..wave
     yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,0,0)}):Play()
     waveTextHideDelay = love.timer.getTime() + 3
@@ -119,6 +125,7 @@ function love.update(dt)
             if not crumb.Collected then
                 crumb.Collected = true
                 player.Crumbs = player.Crumbs + 1
+                sfx.Crumb:play()
             end
         end
     end
