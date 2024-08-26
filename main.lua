@@ -137,10 +137,10 @@ function love.update(dt)
             end
         end
     end
-
+    
     crumbsText.Text = player.Crumbs
     
-    if deadEnemies == #enemies and waveSpawnDelay ~= -1 then
+    if deadEnemies == #enemies and waveSpawnDelay == -1 then
         waveSpawnDelay = love.timer.getTime() + 3
         wave = wave + 1
         
@@ -151,7 +151,6 @@ function love.update(dt)
     end
     
     if waveSpawnDelay ~= -1 and love.timer.getTime() > waveSpawnDelay then
-        
         waveSpawnDelay = -1
         
         
@@ -170,6 +169,12 @@ function love.update(dt)
     if not paused then 
         cx = cx + player.DX
         cy = cy + player.DY
+    end
+
+    if utils:Distance(player.X, player.Y, shop.X + 50, shop.Y + 50) <= 75 then
+        shop.Sprite = 2
+    else
+        shop.Sprite = 1
     end
     
     yan:Update(dt)
@@ -201,7 +206,7 @@ end]]
 function love.draw()
     love.graphics.draw(bgImage, bgQuad, 100 - cx - cxOffset, 10 - cy - cyOffset)
     
-    shop:Draw(cx - cxOffset,cy  - cyOffset)
+    shop:Draw(cx - cxOffset, cy - cyOffset)
     for _, enemy in ipairs(enemies) do
         enemy:Draw(cx - cxOffset, cy - cyOffset)
     end
@@ -211,7 +216,7 @@ function love.draw()
     player:Draw(cx - cxOffset, cy - cyOffset)
     
     love.graphics.draw(sprites.HealthbarBase)
-
+    
     love.graphics.stencil(function ()
         love.graphics.rectangle("fill", 34, 5, (player.Health / player.MaxHealth) * 60, 20)
     end, "replace", 1)

@@ -5,6 +5,10 @@ shop.Y = 0
 shop.Visible = false
 require 'yan'
 local sprite = love.graphics.newImage("/img/shop.png")
+local spriteHover = love.graphics.newImage("/img/shop_hover.png")
+
+shop.Sprite = 1
+
 local player = require("modules.player")
 local purchases = {
     {
@@ -112,7 +116,12 @@ function shop:Load()
 end
 
 function shop:Draw(cx, cy)
-    love.graphics.draw(sprite, self.X - cx, self.Y - cy)
+    if self.Sprite == 1 then
+        love.graphics.draw(sprite, self.X - cx, self.Y - cy)
+    elseif self.Sprite == 2 then
+        love.graphics.draw(spriteHover, self.X - cx, self.Y - cy)
+    end
+    
 end
 
 return shop
