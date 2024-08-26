@@ -16,9 +16,11 @@ local enemyIncrease = 4
 
 local waveTextHideDelay = love.timer.getTime() + 3
 
+local paused = false
+
 function SpawnWave()
     waveText.Text = "WAVE "..wave
-    --yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,0,0)}):Play()
+    yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,0,0)}):Play()
     waveTextHideDelay = love.timer.getTime() + 3
     
     for i = 1, startingEnemies + (enemyIncrease * (wave - 1)) do
@@ -27,8 +29,8 @@ function SpawnWave()
         local function ChoosePos()
             enemy.X = love.math.random(-400,800)
             enemy.Y = love.math.random(-400,800)
-
-            --if utils:Distance(enemy.X, enemy.Y, player.X, player.Y) <= 300 then ChoosePos() return end
+            
+            if utils:Distance(enemy.X, enemy.Y, player.X, player.Y) <= 300 then ChoosePos() return end
         end
         ChoosePos()
         
@@ -73,26 +75,26 @@ function love.load()
 end
 
 function love.update(dt)
-    world:update(dt)
+    if not paused then world:update(dt) end
     
     local deadEnemies = 0
 
     for _, enemy in ipairs(enemies) do
-        --enemy:Follow(player, dt)
+        if not paused then enemy:Follow(player, dt) end
         
         if enemy.Dead then
             deadEnemies = deadEnemies + 1
         end
     end
 
-    --[[for _, crumb in ipairs(crumbs) do
+    for _, crumb in ipairs(crumbs) do
         if utils:Distance(player.X, player.Y, crumb.X, crumb.Y) <= 30 then
             if not crumb.Collected then
                 crumb.Collected = true
                 player.Crumbs = player.Crumbs + 1
             end
         end
-    end]]
+    end
 
     crumbsText.Text = "Crumbs: "..player.Crumbs
     
@@ -103,14 +105,16 @@ function love.update(dt)
 
     if waveTextHideDelay ~= -1 and love.timer.getTime() >= waveTextHideDelay then
         waveTextHideDelay = -1
-       -- yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,-0.1,0)}):Play()
+        yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,-0.1,0)}):Play()
     end
     
-    player:Update(dt)
+    if not paused then player:Update(dt) end
     
     love.window.setPosition(cx, cy)
-    cx = cx + player.DX
-    cy = cy + player.DY
+    if not paused then 
+        cx = cx + player.DX
+        cy = cy + player.DY
+    end
 
     yan:Update(dt)
 end
@@ -122,8 +126,12 @@ function love.keypressed(key)
     if key == "e" then
         print(utils:Distance(player.X, player.Y, shop.X, shop.Y))
         print(player.X, player.Y, shop.X, shop.Y)
-        if utils:Distance(player.X, player.Y, shop.X, shop.Y) <= 75 then
+        if utils:Distance(player.X, player.Y, shop.X + 50, shop.Y + 50) <= 75 then
+            paused = not paused
             shop.Screen.Enabled = not shop.Screen.Enabled
+        elseif shop.Screen.Enabled then
+            paused = false
+            shop.Screen.Enabled = false
         end
     end
 end

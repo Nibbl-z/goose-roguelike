@@ -102,7 +102,7 @@ function player:Attack(enemies)
     attacking = true
     stopAttackTimer = love.timer.getTime() + 0.2
     attack.Rotation = 0
-    --yan:NewTween(attack, yan:TweenInfo(0.2), {Rotation = attack.Rotation + math.rad(360)}):Play()
+    yan:NewTween(attack, yan:TweenInfo(0.2), {Rotation = attack.Rotation + math.rad(360)}):Play()
     for _, enemy in ipairs(enemies) do
         if utils:Distance(self.X, self.Y, enemy.X, enemy.Y) < self.SwordSize + 20 then
             enemy:TakeDamage(self.Strength)

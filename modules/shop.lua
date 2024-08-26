@@ -30,10 +30,28 @@ local purchases = {
 
     {
         Name = "Bigger Sword",
-        Description = "Increase sword range by 10",
+        Description = "Increase sword range by 5",
         Price = 15,
         OnPurchase = function (player)
-            player.SwordSize = player.SwordSize + 10
+            player.SwordSize = player.SwordSize + 5
+        end
+    },
+
+    {
+        Name = "Speed",
+        Description = "Increases your movement speed by 10%",
+        Price = 10,
+        OnPurchase = function (player)
+            player.Speed = player.Speed + 5
+        end
+    },
+
+    {
+        Name = "Max Health",
+        Description = "Increases your maximum health by 10",
+        Price = 10,
+        OnPurchase = function (player)
+            player.MaxHealth = player.MaxHealth + 10
         end
     }
 }
@@ -42,28 +60,28 @@ function shop:Load()
     self.Screen = yan:Screen()
     self.Screen.Enabled = false
     frame = yan:Frame(self.Screen)
-    frame.Size = UIVector2.new(0.6,0,0.6,0)
+    frame.Size = UIVector2.new(0.8,0,0.8,0)
     frame.Position = UIVector2.new(0.5,0,0.5,0)
     frame.AnchorPoint = Vector2.new(0.5,0.5)
     frame.Padding = UIVector2.new(0,5,0,5)
-
+    
     frame.Color = Color.new(0,0,0,0.5)
     
     for i, purchase in ipairs(purchases) do
         purchaseFrame = yan:Frame(self.Screen)
-        purchaseFrame.Position = UIVector2.new(0,0,0.2 * (i - 1), 10 * (i - 1))
-        purchaseFrame.Size = UIVector2.new(1,0,0.2,0)
+        purchaseFrame.Position = UIVector2.new(0,0,0.15 * (i - 1), 10 * (i - 1))
+        purchaseFrame.Size = UIVector2.new(1,0,0.15,0)
         purchaseFrame.Color = Color.new(0.2,0.2,0.2,1)
-        purchaseFrame.Padding = UIVector2.new(0,10,0,10)
+        purchaseFrame.Padding = UIVector2.new(0,5,0,5)
         purchaseFrame:SetParent(frame)
         
-        titleLabel = yan:Label(self.Screen, purchase.Name, 20, "left", "center")
+        titleLabel = yan:Label(self.Screen, purchase.Name, 15, "left", "center")
         titleLabel.Size = UIVector2.new(0.6,0,0.6,0)
         titleLabel.TextColor = Color.new(1,1,1,1)
         titleLabel:SetParent(purchaseFrame)
         titleLabel.ZIndex = 3
         
-        descriptionLabel = yan:Label(self.Screen, purchase.Description, 15, "left", "center")
+        descriptionLabel = yan:Label(self.Screen, purchase.Description, 12, "left", "center")
         descriptionLabel.Size = UIVector2.new(0.6,0,0.4,0)
         descriptionLabel.Position = UIVector2.new(0,0,0.6,0)
         descriptionLabel.TextColor = Color.new(1,1,1,1)
