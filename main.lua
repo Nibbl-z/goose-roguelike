@@ -71,7 +71,7 @@ function love.load()
     
     screen.Enabled = true
     
-    waveText = yan:Label(screen, "WAVE 1", 32, "center", "center")
+    waveText = yan:Label(screen, "WAVE 1", 32, "center", "center", "/Montserrat.ttf")
     waveText.Size = UIVector2.new(1,0,0.1,0)
     waveText.Position = UIVector2.new(0,0,-0.1,0)
     waveText.TextColor = Color.new(1,1,1,1)
@@ -81,7 +81,7 @@ function love.load()
     crumbsImg.Size = UIVector2.new(0,30,0,30)
     crumbsImg.AnchorPoint = Vector2.new(1,0)
     
-    crumbsText = yan:Label(screen, "0", 24, "right", "center")
+    crumbsText = yan:Label(screen, "0", 24, "right", "center", "/Montserrat.ttf")
     crumbsText.Position = UIVector2.new(1,-45,0,10)
     crumbsText.AnchorPoint = Vector2.new(1,0)
     crumbsText.TextColor = Color.new(1,1,1,1)
@@ -142,7 +142,7 @@ function love.update(dt)
         cx = cx + player.DX
         cy = cy + player.DY
     end
-
+    
     yan:Update(dt)
 end
 
