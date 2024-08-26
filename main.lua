@@ -11,21 +11,26 @@ local world = love.physics.newWorld(0, 0, true)
 require("yan")
 
 local wave = 1
-local startingEnemies = 5
-local enemyIncrease = 4
+local startingEnemies = 3
+local enemyIncrease = 1
 
 local startSpeed = 5
-local speedIncrease = 2
+local speedIncrease = 0.25
 
 local startDamage = 1
-local damageIncrease = 1
+local damageIncrease = 0.1
 
 local startHealth = 10
-local healthIncrease = 1
+local healthIncrease = 0.25
 
 local waveTextHideDelay = love.timer.getTime() + 3
 
 local paused = false
+
+local sprites = {
+    HealthbarBase = love.graphics.newImage("/img/healthbar_base.png"),
+    Healthbar = love.graphics.newImage("/img/healthbar.png")
+}
 
 function SpawnWave()
     waveText.Text = "WAVE "..wave
@@ -71,11 +76,16 @@ function love.load()
     waveText.Position = UIVector2.new(0,0,-0.1,0)
     waveText.TextColor = Color.new(1,1,1,1)
     
-    crumbsText = yan:Label(screen, "Crumbs: 0", 24, "right", "center")
-    crumbsText.Position = UIVector2.new(1,0,0,0)
+    crumbsImg = yan:Image(screen, "/img/crumb_ui.png")
+    crumbsImg.Position = UIVector2.new(1,-10,0,10)
+    crumbsImg.Size = UIVector2.new(0,30,0,30)
+    crumbsImg.AnchorPoint = Vector2.new(1,0)
+    
+    crumbsText = yan:Label(screen, "0", 24, "right", "center")
+    crumbsText.Position = UIVector2.new(1,-45,0,10)
     crumbsText.AnchorPoint = Vector2.new(1,0)
     crumbsText.TextColor = Color.new(1,1,1,1)
-    crumbsText.Size = UIVector2.new(0.5,0,0.1,0)
+    crumbsText.Size = UIVector2.new(0.5,0,0,30)
     
     player:Load(world)
     love.window.setMode(500,500,{borderless = true})
@@ -85,6 +95,10 @@ function love.load()
     shop.Visible = true
     shop:Load()
     SpawnWave()
+    
+    bgImage = love.graphics.newImage("/img/grass.png")
+    bgImage:setWrap("repeat", "repeat")
+    bgQuad = love.graphics.newQuad(0, 0, 20000000, 20000000, 800, 600)
 end
 
 function love.update(dt)
@@ -109,7 +123,7 @@ function love.update(dt)
         end
     end
 
-    crumbsText.Text = "Crumbs: "..player.Crumbs
+    crumbsText.Text = player.Crumbs
     
     if deadEnemies == #enemies then
         wave = wave + 1
@@ -156,7 +170,8 @@ end
 end]]
 
 function love.draw()
-    love.graphics.setBackgroundColor(0.5,0.5,0.5,0)
+    love.graphics.draw(bgImage, bgQuad, 100 - cx - cxOffset, 10 - cy - cyOffset)
+    
     shop:Draw(cx - cxOffset,cy  - cyOffset)
     for _, enemy in ipairs(enemies) do
         enemy:Draw(cx - cxOffset, cy - cyOffset)
@@ -166,12 +181,21 @@ function love.draw()
     end
     player:Draw(cx - cxOffset, cy - cyOffset)
     
-    love.graphics.rectangle("fill", 5, 5, 75, 25)
+    love.graphics.draw(sprites.HealthbarBase)
+
+    love.graphics.stencil(function ()
+        love.graphics.rectangle("fill", 34, 5, (player.Health / player.MaxHealth) * 60, 20)
+    end, "replace", 1)
+    love.graphics.setStencilTest("greater", 0)
+    
+    love.graphics.draw(sprites.Healthbar, 34, 5)
+    love.graphics.setStencilTest()
+    --[[love.graphics.rectangle("fill", 5, 5, 75, 25)
     love.graphics.setColor(1,0,0,1)
     love.graphics.rectangle("fill", 5, 5, (player.Health / player.MaxHealth) * 75, 25)
-    love.graphics.setColor(1,1,1,1)
+    love.graphics.setColor(1,1,1,1)]]
     
     
-
+    
     yan:Draw()
 end
