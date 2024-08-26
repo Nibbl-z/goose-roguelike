@@ -71,34 +71,37 @@ function shop:Load()
     frame.Color = Color.new(0,0,0,0)
     
     for i, purchase in ipairs(purchases) do
-        purchaseFrame = yan:Image(self.Screen, "/img/shop_item.png")
+        local purchaseFrame = yan:Image(self.Screen, "/img/shop_item.png")
         purchaseFrame.Position = UIVector2.new(0,0,0.15 * (i - 1) + 0.1, 10 * (i - 1))
         purchaseFrame.Size = UIVector2.new(1,0,0.15,0)
         --purchaseFrame.Color = Color.new(0.2,0.2,0.2,0)
         purchaseFrame.Padding = UIVector2.new(0,12,0,12)
         purchaseFrame:SetParent(frame)
         
-        titleLabel = yan:Label(self.Screen, purchase.Name, 15, "left", "center", "/Montserrat.ttf")
+        local titleLabel = yan:Label(self.Screen, purchase.Name, 15, "left", "center", "/Montserrat-Bold.ttf")
         titleLabel.Size = UIVector2.new(0.7,0,0.6,0)
         titleLabel.TextColor = Color.new(1,1,1,1)
         titleLabel:SetParent(purchaseFrame)
         titleLabel.ZIndex = 3
         
-        descriptionLabel = yan:Label(self.Screen, purchase.Description, 12, "left", "center", "/Montserrat.ttf")
+        local descriptionLabel = yan:Label(self.Screen, purchase.Description, 12, "left", "center", "/Montserrat.ttf")
         descriptionLabel.Size = UIVector2.new(0.7,0,0.4,0)
         descriptionLabel.Position = UIVector2.new(0,0,0.5,0)
-        descriptionLabel.TextColor = Color.new(0.8,0.8,0.8,1)
+        descriptionLabel.TextColor = Color.new(1,1,1,1)
         descriptionLabel:SetParent(purchaseFrame)
         descriptionLabel.ZIndex = 3
         
-        purchaseButton = yan:TextButton(self.Screen, purchase.Price.." Crumbs", 15, "center", "center", "/Montserrat.ttf")
+        local purchaseButton = yan:TextButton(self.Screen, purchase.Price.." Crumbs", 15, "center", "center", "/Montserrat-Bold.ttf")
         purchaseButton.Size = UIVector2.new(0.3,0,1,0)
         purchaseButton.Position = UIVector2.new(0.7,0,0,0)
-        purchaseButton.Color = Color.new(0,1,0,1)
+        purchaseButton.Color = Color.new(0,0.8,0,1)
         purchaseButton.TextColor = Color.new(1,1,1,1)
         purchaseButton:SetParent(purchaseFrame)
         purchaseButton.ZIndex = 3
-
+        
+        purchaseButton.MouseEnter = function ()  purchaseButton.Color = Color.new(0,0.6,0,1) end
+        purchaseButton.MouseLeave = function ()  purchaseButton.Color = Color.new(0,0.8,0,1) end
+        
         purchaseButton.MouseDown = function ()
             if player.Crumbs >= purchase.Price then
                 player.Crumbs = player.Crumbs - purchase.Price
