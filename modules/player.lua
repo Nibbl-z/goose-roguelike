@@ -9,7 +9,7 @@ player.Direction = 1
 player.Health = 100
 player.MaxHealth = 100
 
-player.Crumbs = 1000
+player.Crumbs = 0
 player.Strength = 5
 player.SwordSize = 75
 
@@ -31,12 +31,46 @@ local damageTimer
 local damaged = false
 local damageSfx = love.audio.newSource("/sfx/damage.wav", "static")
 local swordSfx = love.audio.newSource("/sfx/sword.mp3", "static")
+
+require "yan"
+
 function player:Load(world)
     self.Body = love.physics.newBody(world, self.X, self.Y, "dynamic")
     self.Body:setLinearDamping(5)
     self.Shape = love.physics.newRectangleShape(50, 50)
     self.Fixture = love.physics.newFixture(self.Body, self.Shape)
     self.Fixture:setRestitution(0)
+
+    self.DeathScreen = yan:Screen()
+    self.DeathScreen.Enabled = false
+    bgFrame = yan:Frame(self.DeathScreen)
+    bgFrame.Color = Color.new(1,0,0,0.5)
+    bgFrame.ZIndex = -1
+    
+    deathImg = yan:Image(self.DeathScreen, "/img/you_died.png")
+    deathImg.Size = UIVector2.new(0,500,0,100)
+    deathImg.Position = UIVector2.new(0,0,0.1,0)
+
+    retryBtn = yan:TextButton(self.DeathScreen, "Retry", 32, "center", "center", "/Montserrat.ttf")
+    retryBtn.AnchorPoint = Vector2.new(0.5, 0.5)
+    retryBtn.Position = UIVector2.new(0.5, 0, 0.5, 0)
+    retryBtn.Size = UIVector2.new(0.5, 0, 0.2, 0)
+    retryBtn.Color = Color.new(0, 133/255, 58/255, 1)
+    retryBtn.TextColor = Color.new(1,1,1,1)
+
+    retryBtn.MouseEnter = function ()
+        retryBtn.Size = UIVector2.new(0.5,10,0.2,10)
+        retryBtn.Color = Color.new(0, 113/255, 38/255, 1)
+    end
+    
+    retryBtn.MouseLeave = function ()
+        retryBtn.Size = UIVector2.new(0.5,0,0.2,0)
+        retryBtn.Color = Color.new(0, 133/255, 58/255, 1)
+    end
+
+    retryBtn.MouseDown = function ()
+        self.Restart()
+    end
 end
 
 function player:Update(dt)
@@ -95,6 +129,7 @@ function player:TakeDamage(damage)
     if self.Health <= 0 then
         self.Body:setActive(false)
         self.Dead = true
+        self.DeathScreen.Enabled = true
     end
 end
 

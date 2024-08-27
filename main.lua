@@ -31,6 +31,8 @@ local waveSpawnDelay = -1
 
 local started = false
 
+local wx, wy = 0, 0
+
 local sprites = {
     HealthbarBase = love.graphics.newImage("/img/healthbar_base.png"),
     Healthbar = love.graphics.newImage("/img/healthbar.png")
@@ -91,6 +93,37 @@ function menu.OnPlay()
     SpawnWave()
 end
 
+function player.Restart()
+    wave = 1
+    cx, cy = 0, 0
+    player.Health = 100
+    player.MaxHealth = 100
+    player.Speed = 3000
+    player.X = 400
+    player.Y = 300
+    player.Direction = 1
+    player.Strength = 5
+    player.SwordSize = 75
+
+    for _, enemy in ipairs(enemies) do
+        enemy.Dead = true
+    end
+    
+    player.Dead = false
+    player.DeathScreen.Enabled = false
+    player.Body:setActive(true)
+    sfx.Wave:clone():play()
+    waveText.Text = "WAVE "..wave
+    yan:NewTween(waveText, yan:TweenInfo(1, EasingStyle.QuadOut), {Position = UIVector2.new(0,0,0,0)}):Play()
+    waveTextHideDelay = love.timer.getTime() + 3
+    SpawnWave()
+
+    love.window.setPosition(wx, wy)
+    player.DX = 0
+    player.DY = 0
+    cx, cy = wx, wy
+end
+
 function love.load()
     pause:Load()
     pause.Paused = true
@@ -98,6 +131,7 @@ function love.load()
     shop.Visible = false
     love.window.setMode(500,500,{borderless = true})
     cx, cy = love.window.getPosition()
+    wx, wy = love.window.getPosition()
     player:Load(world)
     menu:Load()
     screen = yan:Screen()
@@ -132,7 +166,7 @@ function love.update(dt)
     if not pause.Paused then world:update(dt) end
     
     local deadEnemies = 0
-
+    
     for _, enemy in ipairs(enemies) do
         if not pause.Paused then enemy:Follow(player, dt) end
         
@@ -201,7 +235,7 @@ function love.keypressed(key)
         if utils:Distance(player.X, player.Y, shop.X + 50, shop.Y + 50) <= 75 then
             pause.Paused = not pause.Paused
             shop.Screen.Enabled = not shop.Screen.Enabled
-
+            
             if shop.Screen.Enabled then
                 sfx.ShopOpen:clone():play()
             end
