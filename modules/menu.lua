@@ -16,15 +16,17 @@ function menu:Load()
     playButton.Position = UIVector2.new(0.5,0,0.7,0)
     playButton.Size = UIVector2.new(0.5, 0, 0.2, 0)
     playButton.AnchorPoint = Vector2.new(0.5, 0.5)
+    playButton.Color = Color.new(0, 133/255, 58/255, 1)
+    playButton.TextColor = Color.new(1,1,1,1)
     
     playButton.MouseEnter = function ()
         playButton.Size = UIVector2.new(0.5,10,0.2,10)
-        playButton.Color = Color.new(0.7,0.7,0.7,1)
+        playButton.Color = Color.new(0, 113/255, 38/255, 1)
     end
     
     playButton.MouseLeave = function ()
         playButton.Size = UIVector2.new(0.5,0,0.2,0)
-        playButton.Color = Color.new(1,1,1,1)
+        playButton.Color = Color.new(0, 133/255, 58/255, 1)
     end
     
     playButton.MouseDown = function ()

@@ -60,6 +60,8 @@ local purchases = {
     }
 }
 
+local purchaseSfx = love.audio.newSource("/sfx/purchase.wav", "static")
+
 function shop:Load()
     self.Screen = yan:Screen()
     self.Screen.Enabled = false
@@ -108,6 +110,7 @@ function shop:Load()
         
         purchaseButton.MouseDown = function ()
             if player.Crumbs >= purchase.Price then
+                purchaseSfx:clone():play()
                 player.Crumbs = player.Crumbs - purchase.Price
                 purchase.OnPurchase(player)
             end

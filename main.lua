@@ -39,7 +39,8 @@ local sprites = {
 local sfx = {
     Crumb = love.audio.newSource("/sfx/crumb.wav", "static"),
     Wave = love.audio.newSource("/sfx/wave.wav", "static"),
-    Music = love.audio.newSource("/music/music.mp3", "stream")
+    Music = love.audio.newSource("/music/music.mp3", "stream"),
+    ShopOpen = love.audio.newSource("/sfx/shop_open.wav", "static")
 }
 
 
@@ -200,6 +201,10 @@ function love.keypressed(key)
         if utils:Distance(player.X, player.Y, shop.X + 50, shop.Y + 50) <= 75 then
             pause.Paused = not pause.Paused
             shop.Screen.Enabled = not shop.Screen.Enabled
+
+            if shop.Screen.Enabled then
+                sfx.ShopOpen:clone():play()
+            end
         elseif shop.Screen.Enabled then
             pause.Paused = false
             shop.Screen.Enabled = false
