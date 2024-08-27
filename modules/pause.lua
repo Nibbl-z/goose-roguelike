@@ -4,9 +4,20 @@ pause.Paused = false
 
 require("yan")
 
+local clickSfx = love.audio.newSource("/sfx/select.wav", "static")
+
 function pause:Load()
     self.Screen = yan:Screen()
     self.Screen.Enabled = false
+    
+    bgFrame = yan:Frame(self.Screen)
+    bgFrame.Color = Color.new(0,0,0,0.5)
+    bgFrame.ZIndex = -1
+
+    pauseImg = yan:Image(self.Screen, "/img/paused.png")
+    pauseImg.Size = UIVector2.new(0, 500, 0, 100)
+    pauseImg.Position = UIVector2.new(0,0,0.1,0)
+
     resumeBtn = yan:TextButton(self.Screen, "Resume", 32, "center", "center", "/Montserrat.ttf")
     resumeBtn.AnchorPoint = Vector2.new(0.5, 0.5)
     resumeBtn.Position = UIVector2.new(0.5, 0, 0.5, 0)
@@ -23,6 +34,7 @@ function pause:Load()
     end
 
     resumeBtn.MouseDown = function ()
+        clickSfx:play()
         self.Paused = false
         self.Screen.Enabled = false
     end
@@ -40,6 +52,11 @@ function pause:Load()
     quitBtn.MouseLeave = function ()
         quitBtn.Size = UIVector2.new(0.5,0,0.2,0)
         quitBtn.Color = Color.new(1,1,1,1)
+    end
+
+    quitBtn.MouseDown = function ()
+        clickSfx:play()
+        love.event.quit()
     end
 end
 

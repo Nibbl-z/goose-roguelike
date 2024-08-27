@@ -74,8 +74,9 @@ function SpawnWave()
 end
 
 function menu.OnPlay()
+    pause.Paused = false
     started = true
-
+    
     shop.X = 300
     shop.Y = 300
     shop.Visible = true
@@ -91,6 +92,7 @@ end
 
 function love.load()
     pause:Load()
+    pause.Paused = true
 
     shop.Visible = false
     love.window.setMode(500,500,{borderless = true})
@@ -162,9 +164,7 @@ function love.update(dt)
     
     if waveSpawnDelay ~= -1 and love.timer.getTime() > waveSpawnDelay then
         waveSpawnDelay = -1
-        
-        
-        
+
         SpawnWave()
     end
 
@@ -194,7 +194,7 @@ function love.keypressed(key)
     if key == "space" then
         player:Attack(enemies)
     end
-    if key == "e" then
+    if key == "e" and not pause.Screen.Enabled then
         print(utils:Distance(player.X, player.Y, shop.X, shop.Y))
         print(player.X, player.Y, shop.X, shop.Y)
         if utils:Distance(player.X, player.Y, shop.X + 50, shop.Y + 50) <= 75 then
@@ -206,7 +206,7 @@ function love.keypressed(key)
         end
     end
 
-    if key == "escape" then
+    if key == "escape" and shop.Screen.Enabled == false then
         pause.Paused = not pause.Paused
         pause.Screen.Enabled = not pause.Screen.Enabled
     end
