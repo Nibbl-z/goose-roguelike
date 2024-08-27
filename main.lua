@@ -101,6 +101,7 @@ function player.Restart()
     player.Speed = 3000
     player.X = 400
     player.Y = 300
+    player.Crumbs = 0
     player.Direction = 1
     player.Strength = 5
     player.SwordSize = 75
